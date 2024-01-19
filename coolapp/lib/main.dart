@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'api_calls.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
-void main() {
-  runApp(MyApp());
+Future main() async {
+  await dotenv.load();
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -11,7 +13,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: FutureBuilder<Map<String, dynamic>?>(
-        future: fetchData(),
+        future: fetchData(dotenv.env['USERNAME'], dotenv.env['API_KEY']),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // While waiting for data, you can show a loading indicator.
