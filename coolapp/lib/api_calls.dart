@@ -1,17 +1,38 @@
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 
-Future<Map<String, dynamic>?> fetchData(username, apiKey) async {
-  final url = Uri.parse(
-      'https://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=$username&api_key=$apiKey&format=json');
+class LastFM {
+  dynamic username;
+  dynamic apiKey;
 
-  final response = await http.get(url);
+  LastFM(this.username, this.apiKey);
 
-  if (response.statusCode == 200) {
-    print("Successful api fetch.");
-    return json.decode(response.body);
-  } else {
-    print("Error fetching from api.");
+  bool responseErrorCheck(http.Response response) {
+    if (response.statusCode == 200) {
+      print("Successful api fetch.");
+      return true;
+    } else {
+      print("Error fetching from api.");
+    }
+    return false;
   }
-  return null;
+
+  Future<Map<String, dynamic>?> getRecentPlays() async {
+    final url = Uri.parse(
+        'http://ws.audioscrobbler.com/2.0/?method=user.getrecenttracks&user=$username&api_key=$apiKey&format=json');
+    final response = await http.get(url);
+    return responseErrorCheck(response)
+        ? json.decode(response.body)
+        : Future.value(null);
+  }
+
+  Future<Map<String, dynamic>?> getTopArtists() async {
+    final url = Uri.parse(
+        'http://ws.audioscrobbler.com/2.0/?method=user.gettopartists&user=$username&api_key=$apiKey&format=json');
+
+    final response = await http.get(url);
+    return responseErrorCheck(response)
+        ? json.decode(response.body)
+        : Future.value(null);
+  }
 }

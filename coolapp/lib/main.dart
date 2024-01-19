@@ -11,9 +11,10 @@ class MyApp extends StatelessWidget {
   const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
+    final user = LastFM(dotenv.env['USERNAME'], dotenv.env['API_KEY']);
     return MaterialApp(
       home: FutureBuilder<Map<String, dynamic>?>(
-        future: fetchData(dotenv.env['USERNAME'], dotenv.env['API_KEY']),
+        future: user.getRecentPlays(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             // While waiting for data, you can show a loading indicator.
