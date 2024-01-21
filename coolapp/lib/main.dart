@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'api_calls.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'dart:convert';
 
 Future main() async {
   await dotenv.load();
   runApp(const MyApp());
-  runApp(const Recentplays());
 }
 
 class MyApp extends StatelessWidget {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(),
+        body: Recentplays(),
       ),
     );
   }
@@ -31,30 +31,21 @@ class Recentplays extends StatelessWidget {
         future: user.getRecentPlays(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            // While waiting for data, you can show a loading indicator.
-            return const Scaffold(
-              body: Center(
-                child: CircularProgressIndicator(),
-              ),
-            );
+            return const CircularProgressIndicator();
           } else if (snapshot.hasError || snapshot.data == null) {
-            // If there is an error or data is null, display an error message.
-            return const Scaffold(
-              body: Center(
-                child: Text('Failed to fetch data.'),
-              ),
-            );
+            return const Text('Failed to fetch data.');
           } else {
-            // If data is available, display it.
             final apiData = snapshot.data!;
-            final artist =
-                apiData['recenttracks']['track'][0]['artist']['#text'];
+            final recentTracks = apiData['recenttracks'];
 
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(artist),
-              ),
-            );
+            if (recentTracks['track'][0]['@attr']['nowplaying'] == 'true') {
+              final track = recentTracks['track'][0]['name'];
+              final artist = recentTracks['track'][0]['artist']['name'];
+              return Text(
+                  'Currently Playing: ${track} - ${artist}');
+            }
+
+            return const Text('Nothing being played.');
           }
         },
       ),
