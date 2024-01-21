@@ -5,10 +5,24 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 Future main() async {
   await dotenv.load();
   runApp(const MyApp());
+  runApp(const Recentplays());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(),
+      ),
+    );
+  }
+}
+
+class Recentplays extends StatelessWidget {
+  const Recentplays({super.key});
+
   @override
   Widget build(BuildContext context) {
     final user = LastFM(dotenv.env['USERNAME'], dotenv.env['API_KEY']);
