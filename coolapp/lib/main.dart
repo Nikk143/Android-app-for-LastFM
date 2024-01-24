@@ -1,5 +1,6 @@
 import 'package:coolapp/themes/theme_manager.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'api_calls.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'themes/theme_constants.dart';
@@ -33,6 +34,7 @@ class Recentplays extends StatelessWidget {
     final user = LastFM(dotenv.env['USERNAME'], dotenv.env['API_KEY']);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
+      theme: defaultTheme,
       home: Scaffold(
         // backgroundColor: Color.fromARGB(255, 28, 0, 15),
         backgroundColor: Theme.of(context).colorScheme.background,
@@ -84,6 +86,7 @@ class Recentplays extends StatelessWidget {
                             child: Text(
                               'Currently Playing: \n$track - $artist',
                               textAlign: TextAlign.center,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           );
                         }
