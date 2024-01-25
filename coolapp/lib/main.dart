@@ -59,7 +59,7 @@ class Recentplays extends StatelessWidget {
                         ? Container(
                             margin: const EdgeInsets.only(top: 30),
                             height: 100,
-                            width: 350,
+                            width: MediaQuery.of(context).size.width * 0.9,
                             padding: const EdgeInsets.symmetric(horizontal: 30),
                             decoration: BoxDecoration(
                               color: Theme.of(context).colorScheme.primary,
@@ -85,6 +85,47 @@ class Recentplays extends StatelessWidget {
                             ),
                           )
                         : Container(),
+                    Container(
+                      height: 150,
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      margin: EdgeInsets.only(top: 20),
+                      padding: EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .shadow
+                                .withOpacity(0.4),
+                            spreadRadius: 2.5,
+                            blurRadius: 8,
+                            offset: const Offset(2, 2),
+                          ),
+                        ],
+                      ),
+                      child: DefaultTextStyle(
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Align(
+                              alignment: Alignment.topLeft,
+                              child: Text('Recently played:'),
+                              ),
+                            Text('1. ${recentTracks['track'][1]['name']}'),
+                            Text('2. ${recentTracks['track'][2]['name']}'),
+                            Text('3. ${recentTracks['track'][3]['name']}'),
+                            Text('4. ${recentTracks['track'][4]['name']}'),
+                            Text('5. ${recentTracks['track'][5]['name']}'),
+                          ],
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               );
