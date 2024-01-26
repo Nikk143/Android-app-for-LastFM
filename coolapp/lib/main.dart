@@ -24,25 +24,52 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class Home extends StatelessWidget {
+class Home extends StatefulWidget {
   const Home({super.key});
+
+  @override
+  _HomeState createState() => _HomeState();
+}
+
+class _HomeState extends State<Home> {
+  int _selectedIndex = 0;
+
+  static List<Widget> _widgetOptions = <Widget>[
+    HomeView(),
+    ReportsView(),
+    OtherView(),
+  ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const Recentplays(),
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        leadingWidth: 120,
-        leading: Padding(
-          padding: const EdgeInsets.only(left: 20),
-          child: Image.asset(
-            'assets/lastfmlogo.png', // Replace with your image asset path
-            width: 100, // Adjust width as needed
-            height: 100, // Adjust height as needed
-            color: Colors.white,
+      body: Center(
+        child: _widgetOptions.elementAt(_selectedIndex),
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.receipt),
+            label: 'Reports',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.more_horiz),
+            label: 'Other',
+          ),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.blue,
+        onTap: _onItemTapped,
       ),
     );
   }
@@ -78,7 +105,7 @@ class Recentplays extends StatelessWidget {
                   (isTrackCurrentlyPlaying(recentTracks))
                       ? Container(
                           margin: const EdgeInsets.only(top: 30),
-                          height: 100,
+                          height: 70,
                           width: MediaQuery.of(context).size.width * 0.9,
                           padding: const EdgeInsets.symmetric(horizontal: 30),
                           decoration: BoxDecoration(
@@ -97,16 +124,28 @@ class Recentplays extends StatelessWidget {
                             ],
                           ),
                           child: Center(
-                            child: Text(
-                              'Currently Playing: \n${recentTracks['track'][0]['name']} - ${recentTracks['track'][0]['artist']['#text']}',
-                              textAlign: TextAlign.center,
-                              style: Theme.of(context).textTheme.bodyMedium,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Image.asset(
+                                  'assets/sound.gif',
+                                  width: 40, // Adjust width as needed
+                                  height: 40, // Adjust height as needed
+                                  fit: BoxFit.contain, // Adjust the image fit
+                                ),
+                                const SizedBox(width: 10),
+                                Text(
+                                  '${recentTracks['track'][0]['name']} - ${recentTracks['track'][0]['artist']['#text']}',
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                              ],
                             ),
                           ),
                         )
                       : Container(),
                   Container(
-                    height: 150,
+                    height: 160,
                     width: MediaQuery.of(context).size.width * 0.9,
                     margin: const EdgeInsets.only(top: 20),
                     padding: const EdgeInsets.all(20),
@@ -161,5 +200,51 @@ class Recentplays extends StatelessWidget {
     } catch (e) {
       return false;
     }
+  }
+}
+
+class HomeView extends StatelessWidget {
+  const HomeView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: const Recentplays(),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        leadingWidth: 120,
+        leading: Padding(
+          padding: const EdgeInsets.only(left: 20),
+          child: Image.asset(
+            'assets/lastfmlogo.png', // Replace with your image asset path
+            width: 100, // Adjust width as needed
+            height: 100, // Adjust height as needed
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ReportsView extends StatelessWidget {
+  const ReportsView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Reports View'),
+    );
+  }
+}
+
+class OtherView extends StatelessWidget {
+  const OtherView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Other View'),
+    );
   }
 }

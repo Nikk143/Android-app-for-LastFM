@@ -18,6 +18,6 @@ final ThemeData defaultTheme = ThemeData(
   ),
   textTheme: TextTheme(
     bodyMedium: GoogleFonts.poppins(fontSize: 17.0),
-    bodySmall: GoogleFonts.poppins(fontSize: 12),
+    bodySmall: GoogleFonts.poppins(fontSize: 14),
   ),
 );
