@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'api_calls.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'themes/theme_constants.dart';
+import 'package:intl/intl.dart';
 
 Future main() async {
   await dotenv.load();
@@ -10,6 +11,7 @@ Future main() async {
 }
 
 ThemeManager _themeManager = ThemeManager();
+final user = LastFM(dotenv.env['USERNAME'], dotenv.env['API_KEY']);
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
@@ -80,7 +82,6 @@ class Recentplays extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final user = LastFM(dotenv.env['USERNAME'], dotenv.env['API_KEY']);
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.background,
       body: FutureBuilder<Map<String, dynamic>?>(
@@ -134,11 +135,16 @@ class Recentplays extends StatelessWidget {
                                   fit: BoxFit.contain, // Adjust the image fit
                                 ),
                                 const SizedBox(width: 10),
-                                Text(
-                                  '${recentTracks['track'][0]['name']} - ${recentTracks['track'][0]['artist']['#text']}',
-                                  textAlign: TextAlign.center,
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
+                                Expanded(
+                                  child: Text(
+                                    '${recentTracks['track'][0]['name']} - ${recentTracks['track'][0]['artist']['#text']}',
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                    overflow: TextOverflow.ellipsis,
+                                    maxLines: 2,
+                                  ),
+                                )
                               ],
                             ),
                           ),
@@ -209,7 +215,12 @@ class HomeView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: const Recentplays(),
+      body: const Column(
+        children: [
+          Expanded(child: Recentplays()),
+          Expanded(child: OverviewStats()),
+        ],
+      ),
       appBar: AppBar(
         backgroundColor: Theme.of(context).colorScheme.primary,
         leadingWidth: 120,
@@ -245,6 +256,61 @@ class OtherView extends StatelessWidget {
   Widget build(BuildContext context) {
     return const Center(
       child: Text('Other View'),
+    );
+  }
+}
+
+class OverviewStats extends StatelessWidget {
+  const OverviewStats({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final DateTime currentTime = DateTime.now().toLocal();
+    DateTime time =
+        DateTime(currentTime.year, currentTime.month, currentTime.day);
+    int unixTime = (time.toUtc()).millisecondsSinceEpoch ~/ 1000;
+    return Scaffold(
+      body: FutureBuilder<Map<String, dynamic>?>(
+        future: user.getRecentPlays(unixTime: unixTime),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (snapshot.hasError || snapshot.data == null) {
+            return Text(
+              'Error fetching recent plays: ${snapshot.error}',
+            );
+          } else {
+            final apiData = snapshot.data!;
+            final dailyScrobbles = apiData['recenttracks']['track'].length;
+            print(apiData['recenttracks']['track']);
+
+            return Align(
+              alignment: Alignment.topCenter,
+              child: Container(
+                height: 70,
+                width: MediaQuery.of(context).size.width * 0.9,
+                padding: const EdgeInsets.symmetric(horizontal: 30),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.primary,
+                  borderRadius: BorderRadius.circular(10),
+                  boxShadow: [
+                    BoxShadow(
+                      color:
+                          Theme.of(context).colorScheme.shadow.withOpacity(0.4),
+                      spreadRadius: 2.5,
+                      blurRadius: 8,
+                      offset: const Offset(2, 2),
+                    ),
+                  ],
+                ),
+                child: Center(child: Text('Daily Scrobbles: $dailyScrobbles')),
+              ),
+            );
+          }
+        },
+      ),
     );
   }
 }
