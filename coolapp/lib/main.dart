@@ -55,6 +55,8 @@ class _HomeState extends State<Home> {
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
       bottomNavigationBar: BottomNavigationBar(
+        selectedIconTheme:
+            IconThemeData(color: Theme.of(context).colorScheme.primary),
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
@@ -70,7 +72,7 @@ class _HomeState extends State<Home> {
           ),
         ],
         currentIndex: _selectedIndex,
-        selectedItemColor: Colors.blue,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
         onTap: _onItemTapped,
       ),
     );
@@ -105,10 +107,10 @@ class Recentplays extends StatelessWidget {
                 children: [
                   (isTrackCurrentlyPlaying(recentTracks))
                       ? Container(
-                          margin: const EdgeInsets.only(top: 30),
-                          height: 70,
+                          margin: const EdgeInsets.only(top: 20),
                           width: MediaQuery.of(context).size.width * 0.9,
-                          padding: const EdgeInsets.symmetric(horizontal: 30),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 30, vertical: 10),
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.primary,
                             borderRadius: BorderRadius.circular(10),
@@ -117,7 +119,7 @@ class Recentplays extends StatelessWidget {
                                 color: Theme.of(context)
                                     .colorScheme
                                     .shadow
-                                    .withOpacity(0.4),
+                                    .withOpacity(0.3),
                                 spreadRadius: 2.5,
                                 blurRadius: 8,
                                 offset: const Offset(2, 2),
@@ -130,9 +132,9 @@ class Recentplays extends StatelessWidget {
                               children: [
                                 Image.asset(
                                   'assets/sound.gif',
-                                  width: 40, // Adjust width as needed
-                                  height: 40, // Adjust height as needed
-                                  fit: BoxFit.contain, // Adjust the image fit
+                                  width: 40,
+                                  height: 40,
+                                  fit: BoxFit.contain,
                                 ),
                                 const SizedBox(width: 10),
                                 Expanded(
@@ -150,44 +152,61 @@ class Recentplays extends StatelessWidget {
                           ),
                         )
                       : Container(),
-                  Container(
-                    height: 160,
-                    width: MediaQuery.of(context).size.width * 0.9,
-                    margin: const EdgeInsets.only(top: 20),
-                    padding: const EdgeInsets.all(20),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primary,
-                      borderRadius: BorderRadius.circular(10),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Theme.of(context)
-                              .colorScheme
-                              .shadow
-                              .withOpacity(0.4),
-                          spreadRadius: 2.5,
-                          blurRadius: 8,
-                          offset: const Offset(2, 2),
-                        ),
-                      ],
-                    ),
-                    child: DefaultTextStyle(
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            overflow: TextOverflow.ellipsis,
+                  Expanded(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width * 0.9,
+                      margin: const EdgeInsets.symmetric(vertical: 20),
+                      padding: const EdgeInsets.all(20),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.primary,
+                        borderRadius: BorderRadius.circular(10),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(context)
+                                .colorScheme
+                                .shadow
+                                .withOpacity(0.3),
+                            spreadRadius: 2.5,
+                            blurRadius: 8,
+                            offset: const Offset(2, 2),
                           ),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Align(
-                            alignment: Alignment.topLeft,
-                            child: Text('Recently played:'),
-                          ),
-                          Text('1. ${recentTracks['track'][1]['name']}'),
-                          Text('2. ${recentTracks['track'][2]['name']}'),
-                          Text('3. ${recentTracks['track'][3]['name']}'),
-                          Text('4. ${recentTracks['track'][4]['name']}'),
-                          Text('5. ${recentTracks['track'][5]['name']}'),
                         ],
+                      ),
+                      child: DefaultTextStyle(
+                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Align(
+                              alignment: Alignment.topLeft,
+                              child: Container(
+                                margin: const EdgeInsets.only(bottom: 10),
+                                child: const Text('Recently played:'),
+                              ),
+                            ),
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: 5,
+                                itemBuilder: (context, index) {
+                                  return Row(
+                                    children: [
+                                      Image.network(
+                                        recentTracks['track'][index]['image'][0]
+                                                ['#text']
+                                            .toString(),
+                                      ),
+                                      Text(
+                                          ' ${recentTracks['track'][index]['name']}'),
+                                    ],
+                                  );
+                                },
+                              ),
+                            )
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -284,12 +303,11 @@ class OverviewStats extends StatelessWidget {
           } else {
             final apiData = snapshot.data!;
             final dailyScrobbles = apiData['recenttracks']['track'].length;
-            print(apiData['recenttracks']['track']);
 
             return Align(
               alignment: Alignment.topCenter,
               child: Container(
-                height: 70,
+                height: 50,
                 width: MediaQuery.of(context).size.width * 0.9,
                 padding: const EdgeInsets.symmetric(horizontal: 30),
                 decoration: BoxDecoration(
@@ -298,7 +316,7 @@ class OverviewStats extends StatelessWidget {
                   boxShadow: [
                     BoxShadow(
                       color:
-                          Theme.of(context).colorScheme.shadow.withOpacity(0.4),
+                          Theme.of(context).colorScheme.shadow.withOpacity(0.3),
                       spreadRadius: 2.5,
                       blurRadius: 8,
                       offset: const Offset(2, 2),
