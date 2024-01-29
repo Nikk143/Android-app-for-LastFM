@@ -119,9 +119,9 @@ class Recentplays extends StatelessWidget {
                                 color: Theme.of(context)
                                     .colorScheme
                                     .shadow
-                                    .withOpacity(0.3),
-                                spreadRadius: 2.5,
-                                blurRadius: 8,
+                                    .withOpacity(0.2),
+                                spreadRadius: 2.0,
+                                blurRadius: 6,
                                 offset: const Offset(2, 2),
                               ),
                             ],
@@ -165,9 +165,9 @@ class Recentplays extends StatelessWidget {
                             color: Theme.of(context)
                                 .colorScheme
                                 .shadow
-                                .withOpacity(0.3),
-                            spreadRadius: 2.5,
-                            blurRadius: 8,
+                                .withOpacity(0.2),
+                            spreadRadius: 2.0,
+                            blurRadius: 6,
                             offset: const Offset(2, 2),
                           ),
                         ],
@@ -191,16 +191,29 @@ class Recentplays extends StatelessWidget {
                               child: ListView.builder(
                                 itemCount: 5,
                                 itemBuilder: (context, index) {
-                                  return Row(
-                                    children: [
-                                      Image.network(
-                                        recentTracks['track'][index]['image'][0]
-                                                ['#text']
-                                            .toString(),
-                                      ),
-                                      Text(
-                                          ' ${recentTracks['track'][index]['name']}'),
-                                    ],
+                                  return Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        vertical: 2.0),
+                                    child: Row(
+                                      children: [
+                                        // Adjust the right padding as needed
+                                        ClipRRect(
+                                          borderRadius:
+                                              BorderRadius.circular(4),
+                                          child: Image.network(
+                                            recentTracks['track'][index]
+                                                    ['image'][0]['#text']
+                                                .toString(),
+                                          ),
+                                        ),
+                                        Expanded(
+                                          child: Text(
+                                            ' ${recentTracks['track'][index]['name']}',
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   );
                                 },
                               ),
@@ -316,14 +329,22 @@ class OverviewStats extends StatelessWidget {
                   boxShadow: [
                     BoxShadow(
                       color:
-                          Theme.of(context).colorScheme.shadow.withOpacity(0.3),
-                      spreadRadius: 2.5,
-                      blurRadius: 8,
+                          Theme.of(context).colorScheme.shadow.withOpacity(0.2),
+                      spreadRadius: 2.0,
+                      blurRadius: 6,
                       offset: const Offset(2, 2),
                     ),
                   ],
                 ),
-                child: Center(child: Text('Daily Scrobbles: $dailyScrobbles')),
+                child: Center(
+                    child: Column(
+                  children: [
+                    Text('Daily Scrobbles: $dailyScrobbles'),
+                    Text(
+                      'Top Artist: ${user.dailyTopArtist.keys.first} - ${user.dailyTopArtist[user.dailyTopArtist.keys.first]} plays',
+                    ),
+                  ],
+                )),
               ),
             );
           }

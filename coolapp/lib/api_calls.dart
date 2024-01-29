@@ -4,6 +4,7 @@ import 'dart:convert';
 class LastFM {
   dynamic username;
   dynamic apiKey;
+  Map<String, int> dailyTopArtist = {};
 
   LastFM(this.username, this.apiKey);
 
@@ -46,6 +47,10 @@ class LastFM {
 
     final utf8Response = utf8.decode(response.bodyBytes);
 
+    if (unixTime != null) {
+      getDailyTopArtist(utf8Response, dailyTopArtist);
+    }
+
     return responseErrorCheck(response) ? json.decode(utf8Response) : null;
   }
 
@@ -59,4 +64,27 @@ class LastFM {
         ? json.decode(utf8Response)
         : Future.value(null);
   }
+}
+
+void getDailyTopArtist(dynamic utf8Response, Map<String, int> dailyTopArtist) {
+  List<String> artists = [];
+  for (dynamic track in json.decode(utf8Response)['recenttracks']['track']) {
+    artists.add(track['artist']['#text']);
+  }
+  Map<String, int> counts = {};
+
+  for (String artist in artists) {
+    counts[artist] = (counts[artist] ?? 0) + 1;
+  }
+  int maxCount = 0;
+  String topArtist = '';
+  counts.forEach(
+    (str, count) {
+      if (count > maxCount) {
+        maxCount = count;
+        topArtist = str;
+      }
+    },
+  );
+  dailyTopArtist[topArtist] = maxCount;
 }
