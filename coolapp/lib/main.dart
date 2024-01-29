@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'api_calls.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'themes/theme_constants.dart';
-import 'package:intl/intl.dart';
 
 Future main() async {
   await dotenv.load();
@@ -172,53 +171,55 @@ class Recentplays extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: DefaultTextStyle(
-                        style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Align(
-                              alignment: Alignment.topLeft,
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                child: const Text('Recently played:'),
+                      child: IntrinsicHeight(
+                        child: DefaultTextStyle(
+                          style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                overflow: TextOverflow.ellipsis,
                               ),
-                            ),
-                            Expanded(
-                              child: ListView.builder(
-                                itemCount: 5,
-                                itemBuilder: (context, index) {
-                                  return Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        vertical: 2.0),
-                                    child: Row(
-                                      children: [
-                                        // Adjust the right padding as needed
-                                        ClipRRect(
-                                          borderRadius:
-                                              BorderRadius.circular(4),
-                                          child: Image.network(
-                                            recentTracks['track'][index]
-                                                    ['image'][0]['#text']
-                                                .toString(),
-                                          ),
-                                        ),
-                                        Expanded(
-                                          child: Text(
-                                            ' ${recentTracks['track'][index]['name']}',
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
-                                },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 10),
+                                  child: const Text('Recently played:'),
+                                ),
                               ),
-                            )
-                          ],
+                              Expanded(
+                                child: ListView.builder(
+                                  itemCount: 5,
+                                  itemBuilder: (context, index) {
+                                    return Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 2.0),
+                                      child: Row(
+                                        children: [
+                                          // Adjust the right padding as needed
+                                          ClipRRect(
+                                            borderRadius:
+                                                BorderRadius.circular(4),
+                                            child: Image.network(
+                                              recentTracks['track'][index]
+                                                      ['image'][0]['#text']
+                                                  .toString(),
+                                            ),
+                                          ),
+                                          Expanded(
+                                            child: Text(
+                                              ' ${recentTracks['track'][index]['name']}',
+                                              overflow: TextOverflow.ellipsis,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  },
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
@@ -320,9 +321,8 @@ class OverviewStats extends StatelessWidget {
             return Align(
               alignment: Alignment.topCenter,
               child: Container(
-                height: 50,
                 width: MediaQuery.of(context).size.width * 0.9,
-                padding: const EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 20),
                 decoration: BoxDecoration(
                   color: Theme.of(context).colorScheme.primary,
                   borderRadius: BorderRadius.circular(10),
@@ -336,15 +336,26 @@ class OverviewStats extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: Center(
-                    child: Column(
-                  children: [
-                    Text('Daily Scrobbles: $dailyScrobbles'),
-                    Text(
-                      'Top Artist: ${user.dailyTopArtist.keys.first} - ${user.dailyTopArtist[user.dailyTopArtist.keys.first]} plays',
+                child: IntrinsicHeight(
+                  child: DefaultTextStyle(
+                    style: Theme.of(context).textTheme.bodyMedium!,
+                    overflow: TextOverflow.ellipsis,
+                    maxLines: 2,
+                    child: Center(
+                      child: Column(
+                        children: [
+                          Text('Daily Scrobbles: $dailyScrobbles'),
+                          Text(
+                            'Top Artist: ${user.dailyTopArtist.keys.first} - ${user.dailyTopArtist[user.dailyTopArtist.keys.first]} plays',
+                          ),
+                          Text(
+                            'Top Album: ${user.dailyTopAlbum.keys.first} - ${user.dailyTopAlbum[user.dailyTopAlbum.keys.first]} plays',
+                          ),
+                        ],
+                      ),
                     ),
-                  ],
-                )),
+                  ),
+                ),
               ),
             );
           }

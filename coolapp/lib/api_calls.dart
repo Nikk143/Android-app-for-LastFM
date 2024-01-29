@@ -5,6 +5,7 @@ class LastFM {
   dynamic username;
   dynamic apiKey;
   Map<String, int> dailyTopArtist = {};
+  Map<String, int> dailyTopAlbum = {};
 
   LastFM(this.username, this.apiKey);
 
@@ -49,6 +50,7 @@ class LastFM {
 
     if (unixTime != null) {
       getDailyTopArtist(utf8Response, dailyTopArtist);
+      getDailyTopAlbum(utf8Response, dailyTopAlbum);
     }
 
     return responseErrorCheck(response) ? json.decode(utf8Response) : null;
@@ -87,4 +89,26 @@ void getDailyTopArtist(dynamic utf8Response, Map<String, int> dailyTopArtist) {
     },
   );
   dailyTopArtist[topArtist] = maxCount;
+}
+
+void getDailyTopAlbum(dynamic utf8Response, Map<String, int> dailyTopAlbum) {
+  List<String> albums = [];
+  for (dynamic track in json.decode(utf8Response)['recenttracks']['track']) {
+    albums.add(track['album']['#text']);
+  }
+  Map<String, int> counts = {};
+  for (String album in albums) {
+    counts[album] = (counts[album] ?? 0) + 1;
+  }
+  int maxCount = 0;
+  String topAlbum = '';
+  counts.forEach(
+    (str, count) {
+      if (count > maxCount) {
+        maxCount = count;
+        topAlbum = str;
+      }
+    },
+  );
+  dailyTopAlbum[topAlbum] = maxCount;
 }
